@@ -1,0 +1,10 @@
+displayName: Map Headers
+type: middleware
+
+import: github.com/fdufault/mapheaders
+
+summary: 'Map header values'
+
+testData:
+  FromHeader: "Some-Header"
+  ToHeader: "Some-Other-Header"
