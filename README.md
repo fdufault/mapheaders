@@ -39,6 +39,7 @@ http:
 
 Examples based on the configuration above:
 
+- A request contains `Some-Header: somevalue` and no mappings are defined: `Some-Other-Header` will be set to `somevalue`
 - A request contains `Some-Header: value1`: `Some-Other-Header` will be set to `value1`
 - A request contains `Some-Header: value2`: `Some-Other-Header` will be set to `valueB`
-- A request contains `Some-header: value1,value2`: `Some-Other-Header` will be set to `value1`
+- A request contains `Some-Header: value1,value2`: `Some-Other-Header` will be set to `value1` (the first match stops the parsing)
