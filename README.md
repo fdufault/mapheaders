@@ -25,8 +25,8 @@ http:
             FromHeader: "Some-Header"                                                                                       
             ToHeader: "Some-Other-Header"                                                                                           
             Mappings:                                                                                                     
-              - "admins"                                                                                                    
-              - "users=>project_user" 
+              - "value1"                                                                                                    
+              - "value2=>valueB" 
  ```             
  Mappings
  
