@@ -8,15 +8,15 @@ Allows the mapping of values from one header to another:
 ## Configuration:
 
 ### Static
-
+```
 experimental:
   plugins:
     mapheaders:
       moduleName: "github.com/fdufault/mapheaders"
       version: "v0.0.1"
-
+```
 ### Dynamic
-
+```
 http:
   middlewares:
     mapSomeHeader:                                                                                                          
@@ -27,7 +27,7 @@ http:
             Mappings:                                                                                                     
               - "admins"                                                                                                    
               - "users=>project_user" 
-              
+ ```             
  Mappings
  
  1) No mappings: the full value of the `From` header is copied to the `To` header
