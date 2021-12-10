@@ -30,6 +30,6 @@ http:
  ```             
  Mappings
  
- 1) No mappings: the full value of the `From` header is copied to the `To` header
- 2) Simple mapping: if the mapping value is found in the `From` header value, it will be set as the `To` header value.
- 3) Remapping: if the value before `=>` is found in the `From` header value, the value after the `=>` will be set as the `To` header value.
+ 1) No mappings: the full value of the `FromHeader` header is copied to the `ToHeader` header
+ 2) Simple mapping: if the mapping value is found in the `FromHeader` header value, it will be set as the `ToHeader` header value.
+ 3) Remapping: if the value before `=>` is found in the `FromHeader` header value, the value after the `=>` will be set as the `ToHeader` header value.
