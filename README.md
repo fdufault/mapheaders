@@ -28,8 +28,9 @@ http:
               - "value1"                                                                                                    
               - "value2=>valueB" 
  ```             
+ FromHeader: The name of the header to use as the source.
+ Toheader: The name of the header to set.
  Mappings
- 
  1) No mappings: the full value of the `FromHeader` header is copied to the `ToHeader` header
  2) Simple mapping: if the mapping value is found in the `FromHeader` header value, it will be set as the `ToHeader` header value.
  3) Remapping: if the value before `=>` is found in the `FromHeader` header value, the value after the `=>` will be set as the `ToHeader` header value.
