@@ -28,18 +28,24 @@ func CreateConfig() *Config {
 // New creates and returns a plugin instance.
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
 
+  var fromHeader string
   if len(config.FromHeader) == 0 {
     fmt.Println("FromHeader is not defined!")
     return nil, fmt.Errorf("FromHeader is not defined")
+  } else {
+    fromHeader = config.FromHeader
   }
 
+  var toHeader string
   if len(config.ToHeader) == 0 {
     fmt.Println("ToHeader is not defined!")
     return nil, fmt.Errorf("ToHeader is not defined")
+  } else {
+    toHeader = config.ToHeader
   }
 
-  useMappings := true
   splitMappings := []Mapping{}
+  useMappings := true
   if len(config.Mappings) == 0 {
     useMappings = false
   } else {
@@ -60,21 +66,21 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
   }
 
   return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-    fromHeaderValue := req.Header.Get(config.FromHeader)
+    fromHeaderValue := req.Header.Get(fromHeader)
     if len(fromHeaderValue) > 0 {
       if useMappings {
         for _, mapping := range splitMappings {
           if strings.Contains(fromHeaderValue, mapping.From) {
-            req.Header.Set(config.ToHeader, mapping.To)
+            req.Header.Set(toHeader, mapping.To)
             break
           }
         }
       } else {
-        req.Header.Set(config.ToHeader, fromHeaderValue)
+        req.Header.Set(toHeader, fromHeaderValue)
       }
     } else {
       requestPath := req.Header.Get("RequestPath")
-      fmt.Printf("Header '%s' has no value for path: %s\n", config.FromHeader, requestPath)
+      fmt.Printf("Header '%s' has no value for path: %s\n", fromHeader, requestPath)
     }
     next.ServeHTTP(rw, req)
   }), nil
