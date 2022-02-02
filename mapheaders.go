@@ -30,10 +30,12 @@ func CreateConfig() *Config {
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
 
   if len(config.FromHeader) == 0 {
+    log.Println("FromHeader is not defined!")
     return nil, fmt.Errorf("FromHeader is not defined")
   }
 
   if len(config.ToHeader) == 0 {
+    log.Println("ToHeader is not defined!")
     return nil, fmt.Errorf("ToHeader is not defined")
   }
 
