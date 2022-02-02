@@ -3,6 +3,7 @@ package mapheaders
 import (
   "context"
   "fmt"
+  "log"
   "net/http"
   "strings"
 )
@@ -29,11 +30,11 @@ func CreateConfig() *Config {
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
 
   if len(config.FromHeader) == 0 {
-    return nil, fmt.Errorf("FromHeader is not defined!")
+    return nil, fmt.Errorf("FromHeader is not defined")
   }
 
   if len(config.ToHeader) == 0 {
-    return nil, fmt.Errorf("ToHeader is not defined!")
+    return nil, fmt.Errorf("ToHeader is not defined")
   }
 
   useMappings := true
@@ -59,19 +60,19 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 
   return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
     fromHeaderValue := req.Header.Get(config.FromHeader)
-    if fromHeaderValue != nil {
-      if len(fromHeaderValue) > 0 {
-        if useMappings {
-          for _, mapping := range splitMappings {
-            if strings.Contains(fromHeaderValue, mapping.From) {
-              req.Header.Set(config.ToHeader, mapping.To)
-              break
-            }
+    if len(fromHeaderValue) > 0 {
+      if useMappings {
+        for _, mapping := range splitMappings {
+          if strings.Contains(fromHeaderValue, mapping.From) {
+            req.Header.Set(config.ToHeader, mapping.To)
+            break
           }
-        } else {
-          req.Header.Set(config.ToHeader, fromHeaderValue)
         }
+      } else {
+        req.Header.Set(config.ToHeader, fromHeaderValue)
       }
+    } else {
+      log.Println("From header has no value!")
     }
     next.ServeHTTP(rw, req)
   }), nil
