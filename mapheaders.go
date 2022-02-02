@@ -3,7 +3,6 @@ package mapheaders
 import (
   "context"
   "fmt"
-  "log"
   "net/http"
   "strings"
 )
@@ -30,12 +29,12 @@ func CreateConfig() *Config {
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
 
   if len(config.FromHeader) == 0 {
-    log.Println("FromHeader is not defined!")
+    fmt.Println("FromHeader is not defined!")
     return nil, fmt.Errorf("FromHeader is not defined")
   }
 
   if len(config.ToHeader) == 0 {
-    log.Println("ToHeader is not defined!")
+    fmt.Println("ToHeader is not defined!")
     return nil, fmt.Errorf("ToHeader is not defined")
   }
 
@@ -74,7 +73,8 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
         req.Header.Set(config.ToHeader, fromHeaderValue)
       }
     } else {
-      log.Println("From header has no value!")
+      requestPath := req.Header.Get("RequestPath")
+      fmt.Printf("Header '%s' has no value for path: %s\n", config.FromHeader, requestPath)
     }
     next.ServeHTTP(rw, req)
   }), nil
