@@ -58,17 +58,19 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
   }
 
   return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-    headerValue := req.Header.Get(config.FromHeader)
-    if len(headerValue) > 0 {
-      if useMappings {
-        for _, mapping := range splitMappings {
-          if strings.Contains(headerValue, mapping.From) {
-            req.Header.Set(config.ToHeader, mapping.To)
-            break
+    fromHeaderValue := req.Header.Get(config.FromHeader)
+    if fromHeaderValue != nil {
+      if len(fromHeaderValue) > 0 {
+        if useMappings {
+          for _, mapping := range splitMappings {
+            if strings.Contains(fromHeaderValue, mapping.From) {
+              req.Header.Set(config.ToHeader, mapping.To)
+              break
+            }
           }
+        } else {
+          req.Header.Set(config.ToHeader, fromHeaderValue)
         }
-      } else {
-        req.Header.Set(config.ToHeader, headerValue)
       }
     }
     next.ServeHTTP(rw, req)
