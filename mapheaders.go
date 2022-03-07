@@ -56,6 +56,10 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
       to := from
       if len(m) == 2 {
         to = strings.TrimSpace(m[1])
+      } else {
+        if from == "default" {
+          fmt.Println("Default mapping has no set value.")
+        }
       }
       newMapping := Mapping{
         From: from,
@@ -70,14 +74,17 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
     fromHeaderValues, found := headers[fromHeader]
     if found {
       fromHeaderValue := strings.Join(fromHeaderValues, ",")
+      headerSet := false
       if useMappings {
         for _, mapping := range splitMappings {
-          if strings.Contains(fromHeaderValue, mapping.From) {
+          if strings.Contains(fromHeaderValue, mapping.From) || (mapping.From == "default") {
             req.Header.Set(toHeader, mapping.To)
+            headerSet = true
             break
           }
         }
-      } else {
+      }
+      if ! headerSet {
         req.Header.Set(toHeader, fromHeaderValue)
       }
     } else {
