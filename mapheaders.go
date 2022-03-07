@@ -66,8 +66,10 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
   }
 
   return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-    fromHeaderValue := req.Header.Get(fromHeader)
-    if len(fromHeaderValue) > 0 {
+    headers := req.Header
+    fromHeaderValues, found := headers[fromHeader]
+    if found {
+      fromHeaderValue := strings.Join(fromHeaderValues, ",")
       if useMappings {
         for _, mapping := range splitMappings {
           if strings.Contains(fromHeaderValue, mapping.From) {
@@ -79,8 +81,11 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
         req.Header.Set(toHeader, fromHeaderValue)
       }
     } else {
-      requestPath := req.Header.Get("RequestPath")
-      fmt.Printf("Header '%s' has no value for path: %s\n", fromHeader, requestPath)
+      requestPaths, found := headers["RequestPath"]
+      if found {
+        requestPath := strings.Join(requestPaths, ",")
+        fmt.Printf("Header '%s' has no value for path: %s\n", fromHeader, requestPath)
+      }
     }
     next.ServeHTTP(rw, req)
   }), nil
