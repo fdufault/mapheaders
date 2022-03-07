@@ -36,7 +36,7 @@ http:
  2) Simple mapping: if the mapping value is found in the `FromHeader` header value, it will be set as the `ToHeader` header value.
  3) Remapping: if the value before `=>` is found in the `FromHeader` header value, the value after the `=>` will be set as the `ToHeader` header value. The mapping for `default` will be used if no other mapping matches.
 
-### NOTE: the mappings are processed in order and once a mapping matches, processing stops at that mapping.
+### NOTE: the mappings are processed in order and once a mapping matches, processing stops at that mapping (including the default mapping).
 
 Examples based on the configuration above:
 
