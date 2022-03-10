@@ -70,27 +70,29 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
   }
 
   return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-    headers := req.Header
-    fromHeaderValues, found := headers[fromHeader]
-    if found {
-      fromHeaderValue := strings.Join(fromHeaderValues, ",")
-      newHeaderValue := fromHeaderValue
-      if useMappings {
-         for _, mapping := range splitMappings {
-          if strings.Contains(fromHeaderValue, mapping.From) {
-            newHeaderValue = mapping.To
-            break
-          } else if mapping.From == "default" {
-            newHeaderValue = mapping.To
+    if req != nil {
+      headers := req.Header
+      fromHeaderValues, found := headers[fromHeader]
+      if found {
+        fromHeaderValue := strings.Join(fromHeaderValues, ",")
+        newHeaderValue := fromHeaderValue
+        if useMappings {
+          for _, mapping := range splitMappings {
+            if strings.Contains(fromHeaderValue, mapping.From) {
+              newHeaderValue = mapping.To
+              break
+            } else if mapping.From == "default" {
+              newHeaderValue = mapping.To
+            }
           }
         }
-      }
-      req.Header.Set(toHeader, newHeaderValue)
-    } else {
-      requestPaths, found := headers["RequestPath"]
-      if found {
-        requestPath := strings.Join(requestPaths, ",")
-        fmt.Printf("Header '%s' has no value for path %s\n", fromHeader, requestPath)
+        req.Header.Set(toHeader, newHeaderValue)
+      } else {
+        requestPaths, found := headers["Requestpath"]
+        if found {
+          requestPath := strings.Join(requestPaths, ",")
+          fmt.Printf("Header '%s' has no value for path %s\n", fromHeader, requestPath)
+        }
       }
     }
     next.ServeHTTP(rw, req)
