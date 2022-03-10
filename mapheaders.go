@@ -74,24 +74,23 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
     fromHeaderValues, found := headers[fromHeader]
     if found {
       fromHeaderValue := strings.Join(fromHeaderValues, ",")
-      headerSet := false
+      newHeaderValue := fromHeaderValue
       if useMappings {
-        for _, mapping := range splitMappings {
-          if strings.Contains(fromHeaderValue, mapping.From) || (mapping.From == "default") {
-            req.Header.Set(toHeader, mapping.To)
-            headerSet = true
+         for _, mapping := range splitMappings {
+          if strings.Contains(fromHeaderValue, mapping.From) {
+            newHeaderValue = mapping.To
             break
+          } else if mapping.From == "default" {
+            newHeaderValue = mapping.To
           }
         }
       }
-      if ! headerSet {
-        req.Header.Set(toHeader, fromHeaderValue)
-      }
+      req.Header.Set(toHeader, newHeaderValue)
     } else {
       requestPaths, found := headers["RequestPath"]
       if found {
         requestPath := strings.Join(requestPaths, ",")
-        fmt.Printf("Header '%s' has no value for path: %s\n", fromHeader, requestPath)
+        fmt.Printf("Header '%s' has no value for path %s\n", fromHeader, requestPath)
       }
     }
     next.ServeHTTP(rw, req)
